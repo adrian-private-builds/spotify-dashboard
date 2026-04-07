@@ -773,7 +773,7 @@ function init() {
   updateSummaryCards();
 
   // ---- TOP ARTISTS OVERVIEW (bar horizontal) ----
-  const topA = S.top_artists_ms.slice(0,50);
+  const topA = S.top_artists_ms.slice(0,10);
   setTimeout(() => {
     mkBarChart('chart-top-artists-overview', topA.map(a=>a.name), topA.map(a=>a.hours), {
       horizontal: true,
