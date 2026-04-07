@@ -490,8 +490,8 @@ function mkBarChart(id, labels, values, opts={}) {
         datalabels: { display: false },
       },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9a9a9a', font: { size: 12 } }, border: { display: false } },
-        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9a9a9a', font: { size: 12 } }, border: { display: false } }
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } }
       },
       ...opts.extra
     }
@@ -508,8 +508,8 @@ function mkLineChart(id, labels, datasets, opts={}) {
       ...chartDefaults,
       plugins: { ...chartDefaults.plugins, legend: { display: false }, datalabels: { display: false } },
       scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#9a9a9a', font: { size: 12 }, maxTicksLimit: 16 }, border: { display: false } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#9a9a9a', font: { size: 12 } }, border: { display: false } }
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#ffffff', font: { size: 12 }, maxTicksLimit: 16 }, border: { display: false } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } }
       },
       ...opts.extra
     }
@@ -779,8 +779,8 @@ function init() {
       extra: {
         indexAxis: 'y',
         scales: {
-          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9a9a9a', font: { size: 12 } }, border: { display: false } },
-          y: { grid: { display: false }, ticks: { color: '#b3b3b3', font: { size: 12 } }, border: { display: false } }
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } },
+          y: { grid: { display: false }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } }
         },
         plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)} godz.` } } }
       }
@@ -811,16 +811,16 @@ function init() {
     chartHourMiniRef = mkBarChart('chart-hour-mini', hours.map(h=>h+':00'), hourVals, {
       extra: {
         scales: {
-          x: { grid:{display:false}, ticks:{color:'#9a9a9a',font:{size:12},maxTicksLimit:8}, border:{display:false} },
-          y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9a9a9a',font:{size:12}}, border:{display:false} }
+          x: { grid:{display:false}, ticks:{color:'#ffffff',font:{size:12},maxTicksLimit:8}, border:{display:false} },
+          y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#ffffff',font:{size:12}}, border:{display:false} }
         }
       }
     });
     chartHourRef = mkBarChart('chart-hour', hours.map(h=>h+':00'), hourVals, {
       extra: {
         scales: {
-          x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9a9a9a',font:{size:12}}, border:{display:false} },
-          y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9a9a9a',font:{size:12}}, border:{display:false} }
+          x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#ffffff',font:{size:12}}, border:{display:false} },
+          y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#ffffff',font:{size:12}}, border:{display:false} }
         },
         plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx=>`  ${ctx.raw} h` } } }
       }
@@ -828,8 +828,8 @@ function init() {
     chartHour2Ref = mkBarChart('chart-hour2', hours.map(h=>h+':00'), hourVals, {
       extra: {
         scales: {
-          x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9a9a9a',font:{size:12}}, border:{display:false} },
-          y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9a9a9a',font:{size:12}}, border:{display:false} }
+          x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#ffffff',font:{size:12}}, border:{display:false} },
+          y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#ffffff',font:{size:12}}, border:{display:false} }
         }
       }
     });
@@ -882,8 +882,8 @@ function init() {
       extra: {
         plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx=>`  ${ctx.raw}%` } } },
         scales: {
-          x: { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#9a9a9a'}, border:{display:false} },
-          y: { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#9a9a9a',callback:v=>v+'%'}, border:{display:false}, min:0 }
+          x: { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#ffffff'}, border:{display:false} },
+          y: { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#ffffff',callback:v=>v+'%'}, border:{display:false}, min:0 }
         }
       }
     });
