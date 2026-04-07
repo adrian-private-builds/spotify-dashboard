@@ -173,6 +173,39 @@
   .two-stat .ts-val { font-size: 24px; font-weight: 800; color: var(--green); }
   .two-stat .ts-label { font-size: 12px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
   
+  /* VINYL CHART */
+  .vinyl-legend {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 20px; font-size: 13px; color: var(--text2);
+  }
+  .vl-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; }
+  .vinyl-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 5px 0;
+  }
+  .vinyl-label {
+    width: 200px; text-align: right; flex-shrink: 0;
+    font-size: 14px; color: var(--text2); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .vinyl-bars-wrap {
+    flex: 1; position: relative; height: 28px;
+  }
+  .vinyl-bar-spotify {
+    position: absolute; top: 4px; left: 0;
+    height: 20px; border-radius: 4px;
+    background: rgba(255,255,255,0.08);
+  }
+  .vinyl-bar-vinyl {
+    position: absolute; top: 4px; left: 0;
+    height: 20px; border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .vinyl-count {
+    width: 36px; flex-shrink: 0;
+    font-size: 13px; color: var(--text3); text-align: left;
+  }
+
   /* YEAR FILTER */
   .year-filter {
     display: flex; gap: 8px; padding: 14px 0 0; flex-wrap: wrap;
@@ -216,6 +249,7 @@
     <button onclick="showTab('tracks')">Utwory</button>
     <button onclick="showTab('habits')">Nawyki</button>
     <button onclick="showTab('years')">Rok po roku</button>
+    <button onclick="showTab('vinyl')">Winyle</button>
   </div>
 
   <div class="year-filter" id="year-filter"></div>
@@ -370,6 +404,21 @@
     <div class="year-grid" id="year-grid" style="margin-top:28px"></div>
   </div>
 
+  <!-- ============ VINYL ============ -->
+  <div id="tab-vinyl" class="tab-content">
+    <div style="margin-top:28px">
+      <p class="section-sub" style="margin-bottom:24px">Top 30 artystów ze Spotify vs liczba posiadanych winyli</p>
+      <div class="vinyl-legend">
+        <span class="vl-dot" style="background:#e8a838"></span><span>1–2 winyle</span>
+        <span class="vl-dot" style="background:#1DB954"></span><span>3–5 winyli</span>
+        <span class="vl-dot" style="background:#4a7fc1"></span><span>6–10 winyli</span>
+        <span class="vl-dot" style="background:#2952a3"></span><span>11+ winyli</span>
+        <span class="vl-dot" style="background:#333"></span><span>brak winyla</span>
+      </div>
+      <div id="vinyl-chart"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -485,6 +534,57 @@ function mkDoughnut(id, labels, values, colors) {
         datalabels: { display: false },
       }
     }
+  });
+}
+
+// ---- VINYL DATA ----
+const VINYL = {
+  'ROME': 5, 'Monster Magnet': 5, 'All Them Witches': 6,
+  'King Gizzard & The Lizard Wizard': 23, 'Com Truise': 3,
+  'The Builders and The Butchers': 4, 'Iron Maiden': 11,
+  'Crowbar': 4, 'King Dude': 2, 'Perturbator': 3,
+  'High On Fire': 6, 'Bolt Thrower': 6, 'Metallica': 8,
+  'Carpenter Brut': 1, 'Sodom': 4, 'Black Sabbath': 7,
+  'Clutch': 5, 'New Model Army': 5, 'Blind Guardian': 4,
+  "Slim Cessna's Auto Club": 3, 'Gunship': 1, 'Type O Negative': 5,
+  'Gojira': 5, 'Kyuss': 2, 'Lana Del Rey': 4, 'Joy Division': 2,
+  'Foals': 2, 'Danzig': 6, 'Morbid Angel': 3, 'Turbonegro': 4,
+  'The Midnight': 1, 'PJ Harvey': 2, 'Orange Goblin': 5, 'Slayer': 5,
+  'Timber Timbre': 2, 'Entombed': 6, 'Pantera': 5, 'Ghost': 7,
+  'Tangerine Dream': 1, 'Judas Priest': 4, 'Death': 4, 'Alcest': 5,
+  'Bruce Springsteen': 2, 'Kadavar': 3, 'Grave Pleasures': 1,
+  'Carnivore': 1, 'Rammstein': 2, 'Motörhead': 5, 'Bathory': 7,
+  'Kreator': 4, 'Blood Incantation': 3,
+};
+
+function vinylColor(n) {
+  if (!n) return '#333';
+  if (n >= 11) return '#2952a3';
+  if (n >= 6)  return '#4a7fc1';
+  if (n >= 3)  return '#1DB954';
+  return '#e8a838';
+}
+
+function buildVinylChart() {
+  const artists = DATA.top_artists_ms.slice(0, 30);
+  const maxHours = artists[0].hours;
+  const maxVinyl = Math.max(...artists.map(a => VINYL[a.name] || 0), 1);
+  const el = document.getElementById('vinyl-chart');
+  el.innerHTML = '';
+  artists.forEach(a => {
+    const vCount = VINYL[a.name] || 0;
+    const spotifyPct = (a.hours / maxHours * 100).toFixed(1);
+    const vinylPct   = (vCount / maxVinyl * 100).toFixed(1);
+    const color = vinylColor(vCount);
+    el.innerHTML += `
+      <div class="vinyl-row">
+        <div class="vinyl-label" title="${a.name}">${a.name}</div>
+        <div class="vinyl-bars-wrap">
+          <div class="vinyl-bar-spotify" style="width:${spotifyPct}%"></div>
+          ${vCount ? `<div class="vinyl-bar-vinyl" style="width:${vinylPct}%;background:${color}"></div>` : ''}
+        </div>
+        <div class="vinyl-count">${vCount ? '💿 '+vCount : '—'}</div>
+      </div>`;
   });
 }
 
@@ -835,6 +935,9 @@ function init() {
   habitCards.forEach(c => {
     hcEl.innerHTML += `<div class="stat-card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`;
   });
+
+  // ---- VINYL CHART ----
+  buildVinylChart();
 
   // ---- YEAR GRID ----
   const ygEl = document.getElementById('year-grid');
