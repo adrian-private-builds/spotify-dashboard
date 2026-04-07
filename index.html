@@ -173,6 +173,19 @@
   .two-stat .ts-val { font-size: 24px; font-weight: 800; color: var(--green); }
   .two-stat .ts-label { font-size: 12px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
   
+  /* YEAR FILTER */
+  .year-filter {
+    display: flex; gap: 8px; padding: 14px 0 0; flex-wrap: wrap;
+  }
+  .year-pill {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text3); font-size: 13px; font-weight: 600;
+    padding: 5px 14px; border-radius: 100px; cursor: pointer;
+    transition: all 0.18s;
+  }
+  .year-pill:hover { color: var(--text); border-color: var(--green); }
+  .year-pill.active { background: var(--green); color: #000; border-color: var(--green); }
+
   @media (max-width: 900px) {
     .grid-2, .grid-3 { grid-template-columns: 1fr; }
     header { padding: 20px; }
@@ -204,6 +217,8 @@
     <button onclick="showTab('habits')">Nawyki</button>
     <button onclick="showTab('years')">Rok po roku</button>
   </div>
+
+  <div class="year-filter" id="year-filter"></div>
 
   <!-- ============ OVERVIEW ============ -->
   <div id="tab-overview" class="tab-content active">
@@ -472,6 +487,71 @@ function mkDoughnut(id, labels, values, colors) {
   });
 }
 
+// ---- YEAR FILTER ----
+let selectedYear = null;
+let chartMonthlyRef = null;
+let chartYearBarsRef = null;
+
+function setYearFilter(year) {
+  selectedYear = year;
+  document.querySelectorAll('.year-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.year === (year || ''));
+  });
+  updateSummaryCards();
+  updateMonthlyChart();
+  updateYearBarsChart();
+}
+
+function updateSummaryCards() {
+  const S = DATA;
+  const cardsEl = document.getElementById('summary-cards');
+  cardsEl.innerHTML = '';
+  let cards;
+  if (!selectedYear) {
+    const summary = S.summary;
+    cards = [
+      { label: 'Godzin muzyki', value: fmtNum(summary.total_hours), sub: `≈ ${summary.total_days} dni nieprzerwanej muzyki` },
+      { label: 'Odtworzeń', value: fmtNum(summary.total_tracks_played), sub: 'w całej historii' },
+      { label: 'Unikalni artyści', value: fmtNum(summary.unique_artists), sub: 'różnych artystów' },
+      { label: 'Unikalne utwory', value: fmtNum(summary.unique_tracks), sub: 'unikalnych piosenek' },
+      { label: 'Lat historii', value: summary.years, sub: `${summary.date_from} – ${summary.date_to}` },
+      { label: 'Wsp. pomijania', value: (() => { const y=Object.values(S.year_stats); const s=y.reduce((a,b)=>a+b.skips,0); const p=y.reduce((a,b)=>a+b.plays,0); return (s/p*100).toFixed(1)+'%'; })(), sub: 'pominiętych utworów' },
+    ];
+  } else {
+    const ys = S.year_stats[selectedYear];
+    const top = (S.top_per_year[selectedYear] || [])[0];
+    cards = [
+      { label: 'Godzin muzyki', value: fmtNum(Math.round(ys.hours)), sub: `w roku ${selectedYear}` },
+      { label: 'Odtworzeń', value: fmtNum(ys.plays), sub: `w roku ${selectedYear}` },
+      { label: 'Pominięto', value: fmtNum(ys.skips), sub: `${ys.skip_rate}% wszystkich odtworzeń` },
+      { label: 'Top artysta', value: top?.name || '—', sub: top ? top.hours.toFixed(1)+' h' : 'brak danych' },
+    ];
+  }
+  cards.forEach(c => {
+    cardsEl.innerHTML += `<div class="stat-card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`;
+  });
+}
+
+function updateMonthlyChart() {
+  if (!chartMonthlyRef) return;
+  const months = selectedYear
+    ? DATA.monthly.filter(m => m.month.startsWith(selectedYear))
+    : DATA.monthly;
+  chartMonthlyRef.data.labels = months.map(m => m.month);
+  chartMonthlyRef.data.datasets[0].data = months.map(m => m.hours);
+  chartMonthlyRef.options.plugins.subtitle = {};
+  chartMonthlyRef.update();
+}
+
+function updateYearBarsChart() {
+  if (!chartYearBarsRef) return;
+  const ys = Object.entries(DATA.year_stats).sort((a,b)=>a[0].localeCompare(b[0]));
+  chartYearBarsRef.data.datasets[0].backgroundColor = ys.map(([y]) =>
+    selectedYear ? (y === selectedYear ? GREEN : GREEN_ALPHA(0.2)) : GREEN_ALPHA(0.8)
+  );
+  chartYearBarsRef.update();
+}
+
 // ---- INIT ----
 function showTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -488,19 +568,16 @@ function init() {
   document.getElementById('header-sub').textContent =
     `${summary.date_from} → ${summary.date_to} · ${summary.years} lat historii`;
 
-  // ---- SUMMARY CARDS ----
-  const cards = [
-    { label: 'Godzin muzyki', value: fmtNum(summary.total_hours), sub: `≈ ${summary.total_days} dni nieprzerwanej muzyki` },
-    { label: 'Odtworzeń', value: fmtNum(summary.total_tracks_played), sub: 'w całej historii' },
-    { label: 'Unikalni artyści', value: fmtNum(summary.unique_artists), sub: 'różnych artystów' },
-    { label: 'Unikalne utwory', value: fmtNum(summary.unique_tracks), sub: 'unikalnych piosenek' },
-    { label: 'Lat historii', value: summary.years, sub: `${summary.date_from} – ${summary.date_to}` },
-    { label: 'Wsp. pomijania', value: (() => { const y = Object.values(S.year_stats); const s=y.reduce((a,b)=>a+b.skips,0); const p=y.reduce((a,b)=>a+b.plays,0); return (s/p*100).toFixed(1)+'%'; })(), sub: 'pominiętych utworów' },
-  ];
-  const cardsEl = document.getElementById('summary-cards');
-  cards.forEach(c => {
-    cardsEl.innerHTML += `<div class="stat-card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`;
+  // ---- YEAR FILTER PILLS ----
+  const years = Object.keys(S.year_stats).sort();
+  const filterEl = document.getElementById('year-filter');
+  filterEl.innerHTML = `<button class="year-pill active" data-year="" onclick="setYearFilter(null)">Wszystkie</button>`;
+  years.forEach(y => {
+    filterEl.innerHTML += `<button class="year-pill" data-year="${y}" onclick="setYearFilter('${y}')">${y}</button>`;
   });
+
+  // ---- SUMMARY CARDS ----
+  updateSummaryCards();
 
   // ---- TOP ARTISTS OVERVIEW (bar horizontal) ----
   const topA = S.top_artists_ms.slice(0,20);
@@ -521,7 +598,7 @@ function init() {
   // ---- YEAR BARS OVERVIEW ----
   const ys = Object.entries(S.year_stats).sort((a,b)=>a[0].localeCompare(b[0]));
   setTimeout(() => {
-    mkBarChart('chart-year-bars', ys.map(e=>e[0]), ys.map(e=>e[1].hours), {
+    chartYearBarsRef = mkBarChart('chart-year-bars', ys.map(e=>e[0]), ys.map(e=>e[1].hours), {
       extra: {
         plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)} h` } } }
       }
@@ -580,9 +657,9 @@ function init() {
   }, 0);
 
   // ---- MONTHLY ----
-  const months = S.monthly;
   setTimeout(() => {
-    mkLineChart('chart-monthly', months.map(m=>m.month), [{
+    const months = DATA.monthly;
+    chartMonthlyRef = mkLineChart('chart-monthly', months.map(m=>m.month), [{
       data: months.map(m=>m.hours),
       borderColor: GREEN,
       backgroundColor: GREEN_ALPHA(0.12),
