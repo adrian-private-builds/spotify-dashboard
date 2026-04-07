@@ -336,12 +336,12 @@
   <div id="tab-artists" class="tab-content">
     <div class="grid-2" style="margin-top:28px">
       <div class="chart-card">
-        <h2>Top 20 Artystów — czas słuchania</h2>
+        <h2>Top 50 Artystów — czas słuchania</h2>
         <p class="subtitle">W godzinach</p>
         <ul class="rank-list" id="list-artists-ms"></ul>
       </div>
       <div class="chart-card">
-        <h2>Top 20 Artystów — liczba odtworzeń</h2>
+        <h2>Top 50 Artystów — liczba odtworzeń</h2>
         <p class="subtitle">Ile razy zaczął grać utwór</p>
         <ul class="rank-list" id="list-artists-plays"></ul>
       </div>
@@ -356,7 +356,7 @@
   <!-- ============ TRACKS ============ -->
   <div id="tab-tracks" class="tab-content">
     <div class="chart-card grid-1" style="margin-top:28px">
-      <h2>Top 20 Utworów wszech czasów</h2>
+      <h2>Top 50 Utworów wszech czasów</h2>
       <p class="subtitle">Według łącznego czasu słuchania</p>
       <ul class="rank-list" id="list-tracks"></ul>
     </div>
@@ -686,8 +686,8 @@ function renderRankList(el, items, valFn, subFn) {
 function updateArtistLists() {
   const yd = getYearData();
   const S = DATA;
-  const artMs = yd ? yd.top_artists_ms.slice(0,20) : S.top_artists_ms.slice(0,20);
-  const artPl = yd ? yd.top_artists_plays.slice(0,20) : S.top_artists_plays.slice(0,20);
+  const artMs = yd ? yd.top_artists_ms.slice(0,50) : S.top_artists_ms.slice(0,50);
+  const artPl = yd ? yd.top_artists_plays.slice(0,50) : S.top_artists_plays.slice(0,50);
   renderRankList(
     document.getElementById('list-artists-ms'), artMs,
     a => a.hours,
@@ -707,7 +707,7 @@ function updateArtistLists() {
 function updateTrackList() {
   const yd = getYearData();
   const S = DATA;
-  const tracks = yd ? yd.top_tracks.slice(0,20) : S.top_tracks.slice(0,20);
+  const tracks = yd ? yd.top_tracks.slice(0,50) : S.top_tracks.slice(0,50);
   const maxMs = tracks[0]?.ms || 1;
   const el = document.getElementById('list-tracks');
   el.innerHTML = '';
@@ -772,7 +772,7 @@ function init() {
   updateSummaryCards();
 
   // ---- TOP ARTISTS OVERVIEW (bar horizontal) ----
-  const topA = S.top_artists_ms.slice(0,20);
+  const topA = S.top_artists_ms.slice(0,50);
   setTimeout(() => {
     mkBarChart('chart-top-artists-overview', topA.map(a=>a.name), topA.map(a=>a.hours), {
       horizontal: true,
