@@ -175,35 +175,37 @@
   
   /* VINYL CHART */
   .vinyl-legend {
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-    margin-bottom: 20px; font-size: 13px; color: var(--text2);
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    margin-bottom: 16px; font-size: 13px; color: var(--text2);
   }
-  .vl-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; }
+  .vl-dot { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
   .vinyl-row {
-    display: flex; align-items: center; gap: 16px;
-    padding: 5px 0;
+    display: flex; align-items: center; gap: 12px;
+    padding: 3px 0;
   }
   .vinyl-label {
-    width: 200px; text-align: right; flex-shrink: 0;
-    font-size: 14px; color: var(--text2); white-space: nowrap;
+    width: 180px; text-align: right; flex-shrink: 0;
+    font-size: 13px; color: var(--text2); white-space: nowrap;
     overflow: hidden; text-overflow: ellipsis;
   }
   .vinyl-bars-wrap {
-    flex: 1; position: relative; height: 28px;
+    flex: 1; display: flex; flex-direction: column; gap: 2px;
   }
   .vinyl-bar-spotify {
-    position: absolute; top: 4px; left: 0;
-    height: 20px; border-radius: 4px;
-    background: rgba(255,255,255,0.08);
+    height: 8px; border-radius: 3px;
+    background: rgba(255,255,255,0.12);
   }
   .vinyl-bar-vinyl {
-    position: absolute; top: 4px; left: 0;
-    height: 20px; border-radius: 4px;
-    transition: width 0.4s ease;
+    height: 8px; border-radius: 3px;
+    background: var(--green);
+    min-width: 3px;
+  }
+  .vinyl-bar-vinyl.no-vinyl {
+    background: transparent; min-width: 0;
   }
   .vinyl-count {
-    width: 36px; flex-shrink: 0;
-    font-size: 13px; color: var(--text3); text-align: left;
+    width: 32px; flex-shrink: 0;
+    font-size: 12px; color: var(--text3); text-align: left;
   }
 
   /* YEAR FILTER */
@@ -409,11 +411,8 @@
     <div style="margin-top:28px">
       <p class="section-sub" style="margin-bottom:24px">Top 30 artystów ze Spotify vs liczba posiadanych winyli</p>
       <div class="vinyl-legend">
-        <span class="vl-dot" style="background:#e8a838"></span><span>1–2 winyle</span>
-        <span class="vl-dot" style="background:#1DB954"></span><span>3–5 winyli</span>
-        <span class="vl-dot" style="background:#4a7fc1"></span><span>6–10 winyli</span>
-        <span class="vl-dot" style="background:#2952a3"></span><span>11+ winyli</span>
-        <span class="vl-dot" style="background:#333"></span><span>brak winyla</span>
+        <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span>Godziny słuchania</span>
+        <span class="vl-dot" style="background:#1DB954"></span><span>Liczba winyli</span>
       </div>
       <div id="vinyl-chart"></div>
     </div>
@@ -558,16 +557,8 @@ const VINYL = {
   'Kreator': 4, 'Blood Incantation': 3,
 };
 
-function vinylColor(n) {
-  if (!n) return '#333';
-  if (n >= 11) return '#2952a3';
-  if (n >= 6)  return '#4a7fc1';
-  if (n >= 3)  return '#1DB954';
-  return '#e8a838';
-}
-
 function buildVinylChart() {
-  const artists = DATA.top_artists_ms.slice(0, 30);
+  const artists = DATA.top_artists_ms.slice(0, 50);
   const maxHours = artists[0].hours;
   const maxVinyl = Math.max(...artists.map(a => VINYL[a.name] || 0), 1);
   const el = document.getElementById('vinyl-chart');
@@ -576,15 +567,14 @@ function buildVinylChart() {
     const vCount = VINYL[a.name] || 0;
     const spotifyPct = (a.hours / maxHours * 100).toFixed(1);
     const vinylPct   = (vCount / maxVinyl * 100).toFixed(1);
-    const color = vinylColor(vCount);
     el.innerHTML += `
       <div class="vinyl-row">
         <div class="vinyl-label" title="${a.name}">${a.name}</div>
         <div class="vinyl-bars-wrap">
           <div class="vinyl-bar-spotify" style="width:${spotifyPct}%"></div>
-          ${vCount ? `<div class="vinyl-bar-vinyl" style="width:${vinylPct}%;background:${color}"></div>` : ''}
+          <div class="vinyl-bar-vinyl ${vCount ? '' : 'no-vinyl'}" style="width:${vCount ? vinylPct : 0}%"></div>
         </div>
-        <div class="vinyl-count">${vCount ? '💿 '+vCount : '—'}</div>
+        <div class="vinyl-count">${vCount ? vCount : '—'}</div>
       </div>`;
   });
 }
