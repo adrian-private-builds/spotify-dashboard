@@ -256,6 +256,10 @@
   </div>
 
   <div class="year-filter" id="year-filter"></div>
+  <div class="year-filter" id="vinyl-sort-bar" style="display:none">
+    <button class="year-pill active" id="vinyl-sort-spotify" onclick="setVinylSort('spotify')">Wg Spotify</button>
+    <button class="year-pill" id="vinyl-sort-vinyl" onclick="setVinylSort('vinyl')">Wg winyli</button>
+  </div>
 
   <!-- ============ OVERVIEW ============ -->
   <div id="tab-overview" class="tab-content active">
@@ -410,15 +414,9 @@
   <!-- ============ VINYL ============ -->
   <div id="tab-vinyl" class="tab-content">
     <div style="margin-top:28px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-        <div class="vinyl-legend" style="margin-bottom:0">
-          <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span>Godziny słuchania</span>
-          <span class="vl-dot" style="background:#1DB954"></span><span>Liczba winyli</span>
-        </div>
-        <div class="nav" style="padding:0">
-          <button class="active" id="vinyl-sort-spotify" onclick="setVinylSort('spotify')">Wg Spotify</button>
-          <button id="vinyl-sort-vinyl" onclick="setVinylSort('vinyl')">Wg winyli</button>
-        </div>
+      <div class="vinyl-legend" style="margin-bottom:20px">
+        <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span>Godziny słuchania</span>
+        <span class="vl-dot" style="background:#1DB954"></span><span>Liczba winyli</span>
       </div>
       <div id="vinyl-chart"></div>
     </div>
@@ -772,6 +770,9 @@ function showTab(name) {
   document.querySelectorAll('.nav button').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   event.target.classList.add('active');
+  const isVinyl = name === 'vinyl';
+  document.getElementById('year-filter').style.display = isVinyl ? 'none' : '';
+  document.getElementById('vinyl-sort-bar').style.display = isVinyl ? '' : 'none';
 }
 
 function init() {
