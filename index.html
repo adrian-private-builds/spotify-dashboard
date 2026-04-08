@@ -542,7 +542,9 @@ function mkDoughnut(id, labels, values, colors) {
 }
 
 // ---- VINYL DATA ----
+// Keys are Spotify names where artist appears on Spotify, vinyl collection names otherwise
 const VINYL = {
+  // Spotify-matched names
   'ROME': 5, 'Monster Magnet': 5, 'All Them Witches': 6,
   'King Gizzard & The Lizard Wizard': 23, 'Com Truise': 3,
   'The Builders and The Butchers': 4, 'Iron Maiden': 11,
@@ -555,11 +557,78 @@ const VINYL = {
   'Foals': 2, 'Danzig': 6, 'Morbid Angel': 3, 'Turbonegro': 4,
   'The Midnight': 1, 'PJ Harvey': 2, 'Orange Goblin': 5, 'Slayer': 5,
   'Timber Timbre': 2, 'Entombed': 6, 'Pantera': 5, 'Ghost': 7,
-  'Tangerine Dream': 1, 'Judas Priest': 4, 'Death': 4, 'Alcest': 5,
+  'Tangerine Dream': 1, 'Judas Priest': 4, 'Death': 4, 'Alcest': 4,
   'Bruce Springsteen': 2, 'Kadavar': 3, 'Grave Pleasures': 1,
   'Carnivore': 1, 'Rammstein': 2, 'Motörhead': 5, 'Bathory': 7,
-  'Kreator': 4, 'Blood Incantation': 3,
+  'Kreator': 4, 'Blood Incantation': 3, 'Lynyrd Skynyrd': 3,
+  'John Maus': 2, 'John Carpenter': 2, 'Nick Cave & The Bad Seeds': 2,
+  // Vinyl collection names (not in Spotify top 50)
+  '16 Horsepower': 1, 'The 69 Eyes': 5, 'Acid Bath': 1, 'Aerosmith': 1,
+  'Alice In Chains': 3, 'Armia': 1, 'Artillery': 1,
+  'Beastie Boys': 1, 'The Beatles': 3, 'The Black Keys': 1,
+  'Black Rebel Motorcycle Club': 2, 'Black River Delta': 1,
+  'Blue Öyster Cult': 2, 'Boards Of Canada': 2, 'Bob Dylan': 1,
+  'Bob Wayne': 1, 'Bohren & Der Club Of Gore': 1, 'Bon Jovi': 2,
+  'Bruce Dickinson': 3, 'Bryan Adams': 1, 'Calibro': 1, 'Carcass': 3,
+  'Cathedral': 1, 'Cavalera': 1, 'Celtic Frost': 1,
+  'Church Of The Cosmic Skull': 1, 'The Clash': 1, 'Colter Wall': 1,
+  'Coroner': 1, 'Corrosion Of Conformity': 2, 'Cory Marks': 1,
+  'Cradle Of Filth': 2, 'Creedence Clearwater Revival': 2,
+  'The Cult': 2, 'Dead Kennedys': 1, 'The Dead South': 1,
+  'Death By Unga Bunga': 2, 'Decapitated': 1, 'Deep Purple': 1,
+  'Demons & Wizards': 1, 'The Devil And The Almighty Blues': 1,
+  'Diamond Head': 1, 'Dio': 2, 'Dire Straits': 2, 'Dismember': 1,
+  'Donny Benet': 1, 'Doomriders': 1, 'The Doors': 3, 'Down': 1,
+  'Dr Misio': 1, 'Drenge': 1, 'Dropkick Murphys': 1, 'Electric Six': 1,
+  'Electric Wizard': 1, 'Elton John': 1, 'Ennio Morricone': 1,
+  'Everlast': 1, 'Exodus': 1, 'Falco': 1, 'Fleetwood Mac': 1,
+  'Foo Fighters': 1, 'Frank Sinatra': 1, 'Frankie And The Witch Fingers': 2,
+  'Gatecreeper': 1, 'Geinoh Yamashirogumi': 1, 'Gluecifer': 1,
+  'Gnome': 2, 'Goat': 1, 'The Good The Bad And The Zugly': 3,
+  'Graveyard': 2, 'Green Lung': 3, 'Greta Van Fleet': 2,
+  "Guns N' Roses": 2, 'Hank Von Helvete': 2, 'Hank Williams': 1,
+  'Hank Williams III': 1, 'The Hellacopters': 1, 'Herbert von Karajan': 1,
+  'Hexvessel': 1, 'HIM': 2, 'The Hives': 5, 'Hällas': 1,
+  'Håndgemeng': 1, 'Idles': 2, 'Iggy Pop': 1, 'Immolation': 1,
+  'Immortal': 2, 'Infernäl Mäjesty': 1, 'Jean-Michel Jarre': 1,
+  'Jefferson Airplane': 1, 'Jimi Hendrix': 1,
+  'The Jimi Hendrix Experience': 1, 'Joe Cocker': 1,
+  'John Garcia And The Band Of Gold': 1, 'Johnny Cash': 2, 'Journey': 1,
+  'Justice': 1, 'Kat': 3, 'KAT & Roman Kostrzewski': 1, 'Kavinsky': 1,
+  'Kenji Kawai': 1, 'Killing Joke': 1, 'King Diamond': 7,
+  'Kula Shaker': 1, 'Kvelertak': 5, 'Lady Pank': 1, 'Laibach': 1,
+  'Lao Che': 1, 'Led Zeppelin': 6, 'Lenny Kravitz': 1,
+  'Liam Gallagher': 1, 'Limp Bizkit': 1, 'Łona': 1, 'M': 1,
+  'M.O.O.N.': 1, 'Machine Head': 1, 'Mad Season': 1, 'Magic Sword': 1,
+  'Mantar': 1, 'Manuel Göttsching': 1, 'Marilyn Manson': 2,
+  'Mastodon': 1, 'Me And That Man': 2, 'Megadeth': 2, 'Mercyful Fate': 5,
+  'Midnight': 1, 'Moonspell': 1, 'The Murlocs': 4,
+  'My Bloody Valentine': 1, 'Myslovitz': 1, 'New Order': 3, 'Nirvana': 2,
+  'Noon': 1, 'Oasis': 4, 'OM': 1, 'Ørganek': 2, 'Orville Peck': 1,
+  'Ozzy Osbourne': 1, 'Pearl Jam': 1, 'Pentagram': 1, 'Perfect': 1,
+  'Phil Collins': 1, 'The Picturebooks': 1, 'Pink Floyd': 3,
+  'Power Trip': 1, 'The Prodigy': 1, 'Public Enemy': 1, 'Pulp': 1,
+  'The Raconteurs': 1, 'Rage Against The Machine': 2, 'Rainbow': 1,
+  'Ramones': 1, 'Red Fang': 2, 'Republika': 1, 'Rival Sons': 3,
+  'Rob Zombie': 1, 'Robbie Williams': 1, 'The Rolling Stones': 1,
+  'Rotting Christ': 3, 'Running Wild': 3, 'Samael': 1, 'Satyricon': 2,
+  'Saxon': 1, 'Scumbag Millionaire': 1, 'Sepultura': 3, 'Shining': 1,
+  'The Shrine': 1, 'Siekiera': 1, 'Silver': 1, 'The Sisters Of Mercy': 1,
+  'Sleep': 2, 'Slomosa': 1, 'The Smiths': 2, 'Steppenwolf': 1,
+  'Suede': 1, 'Suicidal Tendencies': 3, 'Suicide': 1,
+  'Supercomfortable': 2, 'Survive': 1, 'T. Rex': 1, 'Talking Heads': 1,
+  'Tears For Fears': 1, 'Tenacious D': 1, 'Thulsa Doom': 2,
+  'Tom Petty': 1, 'Tom Petty And The Heartbreakers': 1,
+  'Toxic Holocaust': 1, 'Trouble': 1, "The Turbo A.C.'s": 1,
+  'Turisas': 2, 'Ulver': 1, 'Uncle Acid & The Deadbeats': 1, 'Vader': 1,
+  'Van Der Graaf Generator': 1, 'Vangelis': 1, 'Venom': 2,
+  'Viagra Boys': 3, 'Villagers Of Ioannina City': 1, 'The Vines': 1,
+  'The Vintage Caravan': 1, 'Voïvod': 1, 'Wardruna': 2,
+  'The White Stripes': 1, 'ZZ Top': 1,
 };
+
+// Spotify hours lookup (name → hours) built from embedded data
+const SPOTIFY_HOURS = Object.fromEntries(DATA.top_artists_ms.map(a => [a.name, a.hours]));
 
 let vinylSort = 'spotify';
 
@@ -573,23 +642,16 @@ function setVinylSort(mode) {
 function buildVinylChart() {
   let artists;
   if (vinylSort === 'vinyl') {
-    // All artists that have vinyls, sorted by count desc, then pad with top Spotify artists
-    const withVinyl = DATA.top_artists_ms
-      .filter(a => VINYL[a.name])
-      .sort((a, b) => (VINYL[b.name] || 0) - (VINYL[a.name] || 0));
-    // Also include vinyl collection artists not in top Spotify list
-    const spotifyNames = new Set(DATA.top_artists_ms.map(a => a.name));
-    const vinylOnly = Object.entries(VINYL)
-      .filter(([name, count]) => count > 0 && !spotifyNames.has(name))
+    artists = Object.entries(VINYL)
       .sort((a, b) => b[1] - a[1])
-      .map(([name, count]) => ({ name, hours: 0 }));
-    artists = [...withVinyl, ...vinylOnly].slice(0, 50);
+      .slice(0, 50)
+      .map(([name, count]) => ({ name, hours: SPOTIFY_HOURS[name] || 0 }));
   } else {
     artists = DATA.top_artists_ms.slice(0, 50);
   }
 
   const maxHours = Math.max(...artists.map(a => a.hours), 1);
-  const maxVinyl = Math.max(...artists.map(a => VINYL[a.name] || 0), 1);
+  const maxVinyl = Math.max(...Object.values(VINYL), 1);
   const el = document.getElementById('vinyl-chart');
   el.innerHTML = '';
   artists.forEach(a => {
