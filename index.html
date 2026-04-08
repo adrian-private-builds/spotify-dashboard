@@ -410,10 +410,15 @@
   <!-- ============ VINYL ============ -->
   <div id="tab-vinyl" class="tab-content">
     <div style="margin-top:28px">
-      <p class="section-sub" style="margin-bottom:24px">Top 30 artystów ze Spotify vs liczba posiadanych winyli</p>
-      <div class="vinyl-legend">
-        <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span>Godziny słuchania</span>
-        <span class="vl-dot" style="background:#1DB954"></span><span>Liczba winyli</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+        <div class="vinyl-legend" style="margin-bottom:0">
+          <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span>Godziny słuchania</span>
+          <span class="vl-dot" style="background:#1DB954"></span><span>Liczba winyli</span>
+        </div>
+        <div class="nav" style="padding:0">
+          <button class="active" id="vinyl-sort-spotify" onclick="setVinylSort('spotify')">Wg Spotify</button>
+          <button id="vinyl-sort-vinyl" onclick="setVinylSort('vinyl')">Wg winyli</button>
+        </div>
       </div>
       <div id="vinyl-chart"></div>
     </div>
@@ -558,9 +563,34 @@ const VINYL = {
   'Kreator': 4, 'Blood Incantation': 3,
 };
 
+let vinylSort = 'spotify';
+
+function setVinylSort(mode) {
+  vinylSort = mode;
+  document.getElementById('vinyl-sort-spotify').classList.toggle('active', mode === 'spotify');
+  document.getElementById('vinyl-sort-vinyl').classList.toggle('active', mode === 'vinyl');
+  buildVinylChart();
+}
+
 function buildVinylChart() {
-  const artists = DATA.top_artists_ms.slice(0, 50);
-  const maxHours = artists[0].hours;
+  let artists;
+  if (vinylSort === 'vinyl') {
+    // All artists that have vinyls, sorted by count desc, then pad with top Spotify artists
+    const withVinyl = DATA.top_artists_ms
+      .filter(a => VINYL[a.name])
+      .sort((a, b) => (VINYL[b.name] || 0) - (VINYL[a.name] || 0));
+    // Also include vinyl collection artists not in top Spotify list
+    const spotifyNames = new Set(DATA.top_artists_ms.map(a => a.name));
+    const vinylOnly = Object.entries(VINYL)
+      .filter(([name, count]) => count > 0 && !spotifyNames.has(name))
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, count]) => ({ name, hours: 0 }));
+    artists = [...withVinyl, ...vinylOnly].slice(0, 50);
+  } else {
+    artists = DATA.top_artists_ms.slice(0, 50);
+  }
+
+  const maxHours = Math.max(...artists.map(a => a.hours), 1);
   const maxVinyl = Math.max(...artists.map(a => VINYL[a.name] || 0), 1);
   const el = document.getElementById('vinyl-chart');
   el.innerHTML = '';
