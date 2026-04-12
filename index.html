@@ -212,6 +212,16 @@
     font-size: 12px; color: var(--text3); text-align: left;
   }
 
+
+  /* LANG SWITCH */
+  .lang-switch { margin-left: auto; display: flex; gap: 4px; flex-shrink: 0; }
+  .lang-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--text3); font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  }
+  .lang-btn:hover { color: var(--text); border-color: var(--green); }
+  .lang-btn.active { color: #000; background: var(--green); border-color: var(--green); }
   /* YEAR FILTER */
   .year-filter {
     display: flex; gap: 8px; padding: 14px 0 0; flex-wrap: wrap;
@@ -242,27 +252,31 @@
 <header>
   <div class="logo"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></div>
   <div>
-    <h1>Moje <span>Spotify</span> — Pełna Historia</h1>
+    <h1><span data-i18n="title_my">Moje</span> <span>Spotify</span> — <span data-i18n="title_history">Pełna Historia</span></h1>
     <p id="header-sub">Ładowanie danych...</p>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" data-lang="pl" onclick="setLang('pl')">PL</button>
+    <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
   </div>
 </header>
 
 <div class="container">
   <div class="nav">
-    <button class="active" onclick="showTab('overview')">Przegląd</button>
-    <button onclick="showTab('timeline')">Oś czasu</button>
-    <button onclick="showTab('artists')">Artyści</button>
-    <button onclick="showTab('albums')">Płyty</button>
-    <button onclick="showTab('tracks')">Utwory</button>
-    <button onclick="showTab('habits')">Nawyki</button>
-    <button onclick="showTab('years')">Rok po roku</button>
-    <button onclick="showTab('vinyl')">Winyle</button>
+    <button class="active" onclick="showTab('overview')" data-i18n="nav_overview">Przegląd</button>
+    <button onclick="showTab('timeline')" data-i18n="nav_timeline">Oś czasu</button>
+    <button onclick="showTab('artists')" data-i18n="nav_artists">Artyści</button>
+    <button onclick="showTab('albums')" data-i18n="nav_albums">Płyty</button>
+    <button onclick="showTab('tracks')" data-i18n="nav_tracks">Utwory</button>
+    <button onclick="showTab('habits')" data-i18n="nav_habits">Nawyki</button>
+    <button onclick="showTab('years')" data-i18n="nav_years">Rok po roku</button>
+    <button onclick="showTab('vinyl')" data-i18n="nav_vinyl">Winyle</button>
   </div>
 
   <div class="year-filter" id="year-filter"></div>
   <div class="year-filter" id="vinyl-sort-bar" style="display:none">
-    <button class="year-pill active" id="vinyl-sort-spotify" onclick="setVinylSort('spotify')">Wg Spotify</button>
-    <button class="year-pill" id="vinyl-sort-vinyl" onclick="setVinylSort('vinyl')">Wg winyli</button>
+    <button class="year-pill active" id="vinyl-sort-spotify" onclick="setVinylSort('spotify')" data-i18n="vi_sort_spotify">Wg Spotify</button>
+    <button class="year-pill" id="vinyl-sort-vinyl" onclick="setVinylSort('vinyl')" data-i18n="vi_sort_vinyl">Wg winyli</button>
   </div>
 
   <!-- ============ OVERVIEW ============ -->
@@ -271,15 +285,15 @@
     
     <div class="grid-2">
       <div class="chart-card">
-        <h2>Top 10 Artystów</h2>
-        <p class="subtitle">Według czasu słuchania (godziny)</p>
+        <h2 data-i18n="ov_top_artists">Top 10 Artystów</h2>
+        <p class="subtitle" data-i18n="ov_top_artists_sub">Według czasu słuchania (godziny)</p>
         <div class="chart-wrap" style="height:320px">
           <canvas id="chart-top-artists-overview"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h2>Słuchanie według roku</h2>
-        <p class="subtitle">Łączny czas w godzinach</p>
+        <h2 data-i18n="ov_by_year">Słuchanie według roku</h2>
+        <p class="subtitle" data-i18n="ov_by_year_sub">Łączny czas w godzinach</p>
         <div class="chart-wrap" style="height:320px">
           <canvas id="chart-year-bars"></canvas>
         </div>
@@ -288,20 +302,20 @@
     
     <div class="grid-3" style="margin-top:20px">
       <div class="chart-card">
-        <h2>Platformy</h2>
-        <p class="subtitle">Skąd słuchasz</p>
+        <h2 data-i18n="ov_platforms">Platformy</h2>
+        <p class="subtitle" data-i18n="ov_platforms_sub">Skąd słuchasz</p>
         <div class="chart-wrap" style="height:240px">
           <canvas id="chart-platforms"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h2>Tryb słuchania</h2>
-        <p class="subtitle">Shuffle / Offline</p>
+        <h2 data-i18n="ov_mode">Tryb słuchania</h2>
+        <p class="subtitle" data-i18n="ov_mode_sub">Shuffle / Offline</p>
         <div class="two-stat" id="mode-stats" style="margin-top:30px"></div>
       </div>
       <div class="chart-card">
-        <h2>Godzina dnia</h2>
-        <p class="subtitle">Kiedy słuchasz</p>
+        <h2 data-i18n="ov_hour">Godzina dnia</h2>
+        <p class="subtitle" data-i18n="ov_hour_sub">Kiedy słuchasz</p>
         <div class="chart-wrap" style="height:200px">
           <canvas id="chart-hour-mini"></canvas>
         </div>
@@ -312,31 +326,31 @@
   <!-- ============ TIMELINE ============ -->
   <div id="tab-timeline" class="tab-content">
     <div class="chart-card grid-1" style="margin-top:28px">
-      <h2>Historia słuchania — miesięcznie</h2>
-      <p class="subtitle">Godziny muzyki każdego miesiąca od 2013 do 2026</p>
+      <h2 data-i18n="tl_monthly">Historia słuchania — miesięcznie</h2>
+      <p class="subtitle" data-i18n="tl_monthly_sub">Godziny muzyki każdego miesiąca od 2013 do 2026</p>
       <div class="chart-wrap" style="height:340px">
         <canvas id="chart-monthly"></canvas>
       </div>
     </div>
     <div class="grid-2">
       <div class="chart-card">
-        <h2>Pora dnia</h2>
-        <p class="subtitle">Kiedy w ciągu dnia słuchasz (łącznie)</p>
+        <h2 data-i18n="tl_daytime">Pora dnia</h2>
+        <p class="subtitle" data-i18n="tl_daytime_sub">Kiedy w ciągu dnia słuchasz (łącznie)</p>
         <div class="chart-wrap" style="height:260px">
           <canvas id="chart-hour"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h2>Dzień tygodnia</h2>
-        <p class="subtitle">Rozkład słuchania</p>
+        <h2 data-i18n="tl_dow">Dzień tygodnia</h2>
+        <p class="subtitle" data-i18n="tl_dow_sub">Rozkład słuchania</p>
         <div class="chart-wrap" style="height:260px">
           <canvas id="chart-dow"></canvas>
         </div>
       </div>
     </div>
     <div class="chart-card grid-1">
-      <h2>Wskaźnik pomijania — rok po roku</h2>
-      <p class="subtitle">Procent pominiętych utworów</p>
+      <h2 data-i18n="tl_skip">Wskaźnik pomijania — rok po roku</h2>
+      <p class="subtitle" data-i18n="tl_skip_sub">Procent pominiętych utworów</p>
       <div class="chart-wrap" style="height:220px">
         <canvas id="chart-skip"></canvas>
       </div>
@@ -347,19 +361,19 @@
   <div id="tab-artists" class="tab-content">
     <div class="grid-2" style="margin-top:28px">
       <div class="chart-card">
-        <h2>Top 50 Artystów — czas słuchania</h2>
-        <p class="subtitle">W godzinach</p>
+        <h2 data-i18n="ar_top_ms">Top 50 Artystów — czas słuchania</h2>
+        <p class="subtitle" data-i18n="ar_top_ms_sub">W godzinach</p>
         <ul class="rank-list" id="list-artists-ms"></ul>
       </div>
       <div class="chart-card">
-        <h2>Top 50 Artystów — liczba odtworzeń</h2>
-        <p class="subtitle">Ile razy zaczął grać utwór</p>
+        <h2 data-i18n="ar_top_pl">Top 50 Artystów — liczba odtworzeń</h2>
+        <p class="subtitle" data-i18n="ar_top_pl_sub">Ile razy zaczął grać utwór</p>
         <ul class="rank-list" id="list-artists-plays"></ul>
       </div>
     </div>
     <div class="chart-card grid-1" style="margin-top:20px">
-      <h2>Kraje słuchania</h2>
-      <p class="subtitle">Skąd na świecie słuchałeś Spotify</p>
+      <h2 data-i18n="ar_countries">Kraje słuchania</h2>
+      <p class="subtitle" data-i18n="ar_countries_sub">Skąd na świecie słuchałeś Spotify</p>
       <div class="country-list" id="country-list"></div>
     </div>
   </div>
@@ -367,8 +381,8 @@
   <!-- ============ TRACKS ============ -->
   <div id="tab-tracks" class="tab-content">
     <div class="chart-card grid-1" style="margin-top:28px">
-      <h2>Top 50 Utworów wszech czasów</h2>
-      <p class="subtitle">Według łącznego czasu słuchania</p>
+      <h2 data-i18n="tr_top">Top 50 Utworów wszech czasów</h2>
+      <p class="subtitle" data-i18n="tr_top_sub">Według łącznego czasu słuchania</p>
       <ul class="rank-list" id="list-tracks"></ul>
     </div>
   </div>
@@ -378,15 +392,15 @@
     <div class="stats-grid" style="margin-top:28px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));" id="habit-cards"></div>
     <div class="grid-2">
       <div class="chart-card" style="margin-top:20px">
-        <h2>Pora dnia</h2>
-        <p class="subtitle">Godziny słuchania w ciągu doby</p>
+        <h2 data-i18n="ha_hour">Pora dnia</h2>
+        <p class="subtitle" data-i18n="ha_hour_sub">Godziny słuchania w ciągu doby</p>
         <div class="chart-wrap" style="height:280px">
           <canvas id="chart-hour2"></canvas>
         </div>
       </div>
       <div class="chart-card" style="margin-top:20px">
-        <h2>Dzień tygodnia</h2>
-        <p class="subtitle">Poniedziałek – Niedziela</p>
+        <h2 data-i18n="ha_dow">Dzień tygodnia</h2>
+        <p class="subtitle" data-i18n="ha_dow_sub">Poniedziałek – Niedziela</p>
         <div class="chart-wrap" style="height:280px">
           <canvas id="chart-dow2"></canvas>
         </div>
@@ -394,15 +408,15 @@
     </div>
     <div class="grid-2">
       <div class="chart-card" style="margin-top:20px">
-        <h2>Platforma</h2>
-        <p class="subtitle">Jak słuchasz</p>
+        <h2 data-i18n="ha_plat">Platforma</h2>
+        <p class="subtitle" data-i18n="ha_plat_sub">Jak słuchasz</p>
         <div class="chart-wrap" style="height:280px">
           <canvas id="chart-platforms2"></canvas>
         </div>
       </div>
       <div class="chart-card" style="margin-top:20px">
-        <h2>Shuffle vs Kolejność</h2>
-        <p class="subtitle">Ile czasu w trybie losowym</p>
+        <h2 data-i18n="ha_shuffle">Shuffle vs Kolejność</h2>
+        <p class="subtitle" data-i18n="ha_shuffle_sub">Ile czasu w trybie losowym</p>
         <div class="chart-wrap" style="height:280px">
           <canvas id="chart-shuffle"></canvas>
         </div>
@@ -419,8 +433,8 @@
   <div id="tab-vinyl" class="tab-content">
     <div style="margin-top:28px">
       <div class="vinyl-legend" style="margin-bottom:20px">
-        <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span>Godziny słuchania</span>
-        <span class="vl-dot" style="background:#1DB954"></span><span>Liczba winyli</span>
+        <span class="vl-dot" style="background:rgba(255,255,255,0.12)"></span><span data-i18n="vi_hours">Godziny słuchania</span>
+        <span class="vl-dot" style="background:#1DB954"></span><span data-i18n="vi_vinyls">Liczba winyli</span>
       </div>
       <div id="vinyl-chart"></div>
     </div>
@@ -430,13 +444,13 @@
   <div id="tab-albums" class="tab-content">
     <div class="grid-2" style="margin-top:28px">
       <div class="chart-card">
-        <h2>Top 50 Płyt — czas słuchania</h2>
-        <p class="subtitle">Łączny czas odtworzeń</p>
+        <h2 data-i18n="al_top_h">Top 50 Płyt — czas słuchania</h2>
+        <p class="subtitle" data-i18n="al_top_h_sub">Łączny czas odtworzeń</p>
         <ul class="rank-list" id="list-albums-hours"></ul>
       </div>
       <div class="chart-card">
-        <h2>Top 50 Płyt — liczba odtworzeń</h2>
-        <p class="subtitle">Ile razy włączyłeś utwór z danej płyty</p>
+        <h2 data-i18n="al_top_p">Top 50 Płyt — liczba odtworzeń</h2>
+        <p class="subtitle" data-i18n="al_top_p_sub">Ile razy włączyłeś utwór z danej płyty</p>
         <ul class="rank-list" id="list-albums-plays"></ul>
       </div>
     </div>
@@ -468,8 +482,9 @@ function countryFlag(code) {
   return flags[code] || '🌍';
 }
 function countryName(code) {
-  const names = {PL:'Polska',DE:'Niemcy',US:'USA',GB:'Wielka Brytania',FR:'Francja',ES:'Hiszpania',IT:'Włochy',NL:'Holandia',SE:'Szwecja',NO:'Norwegia',DK:'Dania',AT:'Austria',CH:'Szwajcaria',BE:'Belgia',CZ:'Czechy',PT:'Portugalia',AU:'Australia',CA:'Kanada',JP:'Japonia',KR:'Korea',BR:'Brazylia',MX:'Meksyk',AR:'Argentyna',TR:'Turcja',RU:'Rosja',UA:'Ukraina',HU:'Węgry',SK:'Słowacja',HR:'Chorwacja',RO:'Rumunia',BG:'Bułgaria',GR:'Grecja','??':'Nieznany'};
-  return names[code] || code;
+  const namesPL = {PL:'Polska',DE:'Niemcy',US:'USA',GB:'Wielka Brytania',FR:'Francja',ES:'Hiszpania',IT:'Włochy',NL:'Holandia',SE:'Szwecja',NO:'Norwegia',DK:'Dania',AT:'Austria',CH:'Szwajcaria',BE:'Belgia',CZ:'Czechy',PT:'Portugalia',AU:'Australia',CA:'Kanada',JP:'Japonia',KR:'Korea',BR:'Brazylia',MX:'Meksyk',AR:'Argentyna',TR:'Turcja',RU:'Rosja',UA:'Ukraina',HU:'Węgry',SK:'Słowacja',HR:'Chorwacja',RO:'Rumunia',BG:'Bułgaria',GR:'Grecja','??':'Nieznany'};
+  const namesEN = {PL:'Poland',DE:'Germany',US:'USA',GB:'United Kingdom',FR:'France',ES:'Spain',IT:'Italy',NL:'Netherlands',SE:'Sweden',NO:'Norway',DK:'Denmark',AT:'Austria',CH:'Switzerland',BE:'Belgium',CZ:'Czechia',PT:'Portugal',AU:'Australia',CA:'Canada',JP:'Japan',KR:'South Korea',BR:'Brazil',MX:'Mexico',AR:'Argentina',TR:'Turkey',RU:'Russia',UA:'Ukraine',HU:'Hungary',SK:'Slovakia',HR:'Croatia',RO:'Romania',BG:'Bulgaria',GR:'Greece','??':'Unknown'};
+  return (LANG === 'en' ? namesEN : namesPL)[code] || code;
 }
 
 const chartDefaults = {
@@ -722,21 +737,21 @@ function updateSummaryCards() {
   if (!selectedYear) {
     const summary = S.summary;
     cards = [
-      { label: 'Godzin muzyki', value: fmtNum(summary.total_hours), sub: `≈ ${summary.total_days} dni nieprzerwanej muzyki` },
-      { label: 'Odtworzeń', value: fmtNum(summary.total_tracks_played), sub: 'w całej historii' },
-      { label: 'Unikalni artyści', value: fmtNum(summary.unique_artists), sub: 'różnych artystów' },
-      { label: 'Unikalne utwory', value: fmtNum(summary.unique_tracks), sub: 'unikalnych piosenek' },
-      { label: 'Lat historii', value: summary.years, sub: `${summary.date_from} – ${summary.date_to}` },
-      { label: 'Wsp. pomijania', value: (() => { const y=Object.values(S.year_stats); const s=y.reduce((a,b)=>a+b.skips,0); const p=y.reduce((a,b)=>a+b.plays,0); return (s/p*100).toFixed(1)+'%'; })(), sub: 'pominiętych utworów' },
+      { label: t('card_hours'), value: fmtNum(summary.total_hours), sub: `≈ ${summary.total_days} ${t('card_hours_sub')}` },
+      { label: t('card_plays'), value: fmtNum(summary.total_tracks_played), sub: t('card_plays_sub') },
+      { label: t('card_artists'), value: fmtNum(summary.unique_artists), sub: t('card_artists_sub') },
+      { label: t('card_tracks'), value: fmtNum(summary.unique_tracks), sub: t('card_tracks_sub') },
+      { label: t('card_years'), value: summary.years, sub: `${summary.date_from} – ${summary.date_to}` },
+      { label: t('card_skip_rate'), value: (() => { const y=Object.values(S.year_stats); const s=y.reduce((a,b)=>a+b.skips,0); const p=y.reduce((a,b)=>a+b.plays,0); return (s/p*100).toFixed(1)+'%'; })(), sub: t('card_skip_rate_sub') },
     ];
   } else {
     const ys = S.year_stats[selectedYear];
     const top = (S.top_per_year[selectedYear] || [])[0];
     cards = [
-      { label: 'Godzin muzyki', value: fmtNum(Math.round(ys.hours)), sub: `w roku ${selectedYear}` },
-      { label: 'Odtworzeń', value: fmtNum(ys.plays), sub: `w roku ${selectedYear}` },
-      { label: 'Pominięto', value: fmtNum(ys.skips), sub: `${ys.skip_rate}% wszystkich odtworzeń` },
-      { label: 'Top artysta', value: top?.name || '—', sub: top ? top.hours.toFixed(1)+' h' : 'brak danych' },
+      { label: t('card_hours'), value: fmtNum(Math.round(ys.hours)), sub: `${t('card_in_year')} ${selectedYear}` },
+      { label: t('card_plays'), value: fmtNum(ys.plays), sub: `${t('card_in_year')} ${selectedYear}` },
+      { label: t('card_skipped'), value: fmtNum(ys.skips), sub: `${ys.skip_rate}% ${t('card_of_all_plays')}` },
+      { label: t('card_top_artist'), value: top?.name || '—', sub: top ? top.hours.toFixed(1)+' h' : t('card_no_data') },
     ];
   }
   cards.forEach(c => {
@@ -863,12 +878,12 @@ function init() {
   
   // Header
   document.getElementById('header-sub').textContent =
-    `${summary.date_from} → ${summary.date_to} · ${summary.years} lat historii`;
+    `${summary.date_from} → ${summary.date_to} · ${summary.years} ${t('header_years')}`;
 
   // ---- YEAR FILTER PILLS ----
   const years = Object.keys(S.year_stats).sort();
   const filterEl = document.getElementById('year-filter');
-  filterEl.innerHTML = `<button class="year-pill active" data-year="" onclick="setYearFilter(null)">Wszystkie</button>`;
+  filterEl.innerHTML = `<button class="year-pill active" data-year="" onclick="setYearFilter(null)">${t('pill_all')}</button>`;
   years.forEach(y => {
     filterEl.innerHTML += `<button class="year-pill" data-year="${y}" onclick="setYearFilter('${y}')">${y}</button>`;
   });
@@ -887,7 +902,7 @@ function init() {
           x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } },
           y: { grid: { display: false }, ticks: { color: '#ffffff', font: { size: 12 } }, border: { display: false } }
         },
-        plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)} godz.` } } }
+        plugins: { ...chartDefaults.plugins, tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)} ${t('hours_short')}` } } }
       }
     });
   }, 0);
@@ -944,7 +959,7 @@ function init() {
   }, 0);
 
   // ---- DOW ----
-  const days = ['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+  const days = t('days_short');
   const dowVals = S.dow_ms.map(v=>Math.round(v/3600000*10)/10);
   setTimeout(() => {
     chartDowRef = mkBarChart('chart-dow', days, dowVals, {
@@ -999,14 +1014,14 @@ function init() {
 
   // ---- MODE STATS ----
   document.getElementById('mode-stats').innerHTML = `
-    <div><div class="ts-val">${S.shuffle_pct}%</div><div class="ts-label">Tryb shuffle</div></div>
-    <div><div class="ts-val">${S.offline_pct}%</div><div class="ts-label">Offline</div></div>
+    <div><div class="ts-val">${S.shuffle_pct}%</div><div class="ts-label">${t('mode_shuffle')}</div></div>
+    <div><div class="ts-val">${S.offline_pct}%</div><div class="ts-label">${t('mode_offline')}</div></div>
   `;
 
   // ---- SHUFFLE DOUGHNUT ----
   setTimeout(() => {
     mkDoughnut('chart-shuffle',
-      ['Shuffle', 'Kolejność'],
+      [t('shuffle_label'), t('order_label')],
       [S.shuffle_pct, 100-S.shuffle_pct],
       [GREEN, '#2a2a2a']
     );
@@ -1031,13 +1046,13 @@ function init() {
   // ---- HABIT CARDS ----
   const peakHour = S.hour_ms.indexOf(Math.max(...S.hour_ms));
   const peakDow = S.dow_ms.indexOf(Math.max(...S.dow_ms));
-  const dowNames = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
+  const dowNames = t('days_long');
   const habitCards = [
-    { label: 'Szczytowa godzina', value: peakHour+':00', sub: 'najaktywniejsza pora dnia' },
-    { label: 'Najaktywniejszy dzień', value: dowNames[peakDow], sub: 'w skali tygodnia' },
-    { label: 'Shuffle', value: S.shuffle_pct+'%', sub: 'odtworzeń w trybie losowym' },
-    { label: 'Offline', value: S.offline_pct+'%', sub: 'słuchania bez internetu' },
-    { label: 'Główna platforma', value: S.platforms[0].name, sub: S.platforms[0].pct+'% czasu słuchania' },
+    { label: t('habit_peak_hour'), value: peakHour+':00', sub: t('habit_peak_hour_sub') },
+    { label: t('habit_peak_day'), value: dowNames[peakDow], sub: t('habit_peak_day_sub') },
+    { label: t('habit_shuffle'), value: S.shuffle_pct+'%', sub: t('habit_shuffle_sub') },
+    { label: t('habit_offline'), value: S.offline_pct+'%', sub: t('habit_offline_sub') },
+    { label: t('habit_platform'), value: S.platforms[0].name, sub: S.platforms[0].pct+'% '+t('habit_platform_sub') },
   ];
   const hcEl = document.getElementById('habit-cards');
   habitCards.forEach(c => {
@@ -1075,7 +1090,7 @@ function init() {
         <div class="rank-sub">${a.artist}</div>
       </div>
       <div class="rank-bar-wrap"><div class="rank-bar-bg"><div class="rank-bar" style="width:${(a.plays/maxAlbumP2*100).toFixed(1)}%"></div></div></div>
-      <span class="rank-val">${a.plays.toLocaleString('pl-PL')} odtw.</span>
+      <span class="rank-val">${a.plays.toLocaleString('pl-PL')} ${t('album_plays')}</span>
     </li>`;
   });
 
@@ -1087,10 +1102,10 @@ function init() {
     const topHtml = topYear.map(a=>`<div class="ytop-item"><span class="ytop-name" title="${a.name}">${a.name}</span><span>${a.hours.toFixed(1)} h</span></div>`).join('');
     ygEl.innerHTML += `<div class="year-card">
       <h3>${y}</h3>
-      <div class="ystat"><strong>${s.hours.toFixed(1)} h</strong> muzyki</div>
-      <div class="ystat"><strong>${fmtNum(s.plays)}</strong> odtworzeń</div>
-      <div class="ystat"><strong>${s.skip_rate}%</strong> pominiętych</div>
-      ${topYear.length ? `<div class="ytop"><div class="ytop-label">Top artyści</div>${topHtml}</div>` : ''}
+      <div class="ystat"><strong>${s.hours.toFixed(1)} h</strong> ${t('year_music')}</div>
+      <div class="ystat"><strong>${fmtNum(s.plays)}</strong> ${t('year_plays')}</div>
+      <div class="ystat"><strong>${s.skip_rate}%</strong> ${t('year_skipped')}</div>
+      ${topYear.length ? `<div class="ytop"><div class="ytop-label">${t('year_top_artists')}</div>${topHtml}</div>` : ''}
     </div>`;
   });
 }
@@ -1099,6 +1114,204 @@ function init() {
 if (typeof ChartDataLabels !== 'undefined') {
   Chart.register(ChartDataLabels);
   Chart.defaults.set('plugins.datalabels', { display: false });
+}
+
+
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+let LANG = 'pl';
+const T = {
+  pl: {
+    // Nav
+    nav_overview: 'Przegląd', nav_timeline: 'Oś czasu', nav_artists: 'Artyści',
+    nav_albums: 'Płyty', nav_tracks: 'Utwory', nav_habits: 'Nawyki',
+    nav_years: 'Rok po roku', nav_vinyl: 'Winyle',
+    // Header
+    title_my: 'Moje', title_history: 'Pełna Historia',
+    header_years: 'lat historii',
+    // Year filter
+    pill_all: 'Wszystkie',
+    // Vinyl sort
+    vi_sort_spotify: 'Wg Spotify', vi_sort_vinyl: 'Wg winyli',
+    // Overview
+    ov_top_artists: 'Top 10 Artystów', ov_top_artists_sub: 'Według czasu słuchania (godziny)',
+    ov_by_year: 'Słuchanie według roku', ov_by_year_sub: 'Łączny czas w godzinach',
+    ov_platforms: 'Platformy', ov_platforms_sub: 'Skąd słuchasz',
+    ov_mode: 'Tryb słuchania', ov_mode_sub: 'Shuffle / Offline',
+    ov_hour: 'Godzina dnia', ov_hour_sub: 'Kiedy słuchasz',
+    // Timeline
+    tl_monthly: 'Historia słuchania — miesięcznie',
+    tl_monthly_sub: 'Godziny muzyki każdego miesiąca od 2013 do 2026',
+    tl_daytime: 'Pora dnia', tl_daytime_sub: 'Kiedy w ciągu dnia słuchasz (łącznie)',
+    tl_dow: 'Dzień tygodnia', tl_dow_sub: 'Rozkład słuchania',
+    tl_skip: 'Wskaźnik pomijania — rok po roku', tl_skip_sub: 'Procent pominiętych utworów',
+    // Artists
+    ar_top_ms: 'Top 50 Artystów — czas słuchania', ar_top_ms_sub: 'W godzinach',
+    ar_top_pl: 'Top 50 Artystów — liczba odtworzeń', ar_top_pl_sub: 'Ile razy zaczął grać utwór',
+    ar_countries: 'Kraje słuchania', ar_countries_sub: 'Skąd na świecie słuchałeś Spotify',
+    // Albums
+    al_top_h: 'Top 50 Płyt — czas słuchania', al_top_h_sub: 'Łączny czas odtworzeń',
+    al_top_p: 'Top 50 Płyt — liczba odtworzeń', al_top_p_sub: 'Ile razy włączyłeś utwór z danej płyty',
+    album_plays: 'odtw.',
+    // Tracks
+    tr_top: 'Top 50 Utworów wszech czasów', tr_top_sub: 'Według łącznego czasu słuchania',
+    // Habits
+    ha_hour: 'Pora dnia', ha_hour_sub: 'Godziny słuchania w ciągu doby',
+    ha_dow: 'Dzień tygodnia', ha_dow_sub: 'Poniedziałek – Niedziela',
+    ha_plat: 'Platforma', ha_plat_sub: 'Jak słuchasz',
+    ha_shuffle: 'Shuffle vs Kolejność', ha_shuffle_sub: 'Ile czasu w trybie losowym',
+    // Years tab
+    nav_years_tab: 'Rok po roku',
+    // Vinyl tab
+    vi_hours: 'Godziny słuchania', vi_vinyls: 'Liczba winyli',
+    // Summary cards
+    card_hours: 'Godzin muzyki', card_hours_sub: 'dni nieprzerwanej muzyki',
+    card_plays: 'Odtworzeń', card_plays_sub: 'w całej historii',
+    card_artists: 'Unikalni artyści', card_artists_sub: 'różnych artystów',
+    card_tracks: 'Unikalne utwory', card_tracks_sub: 'unikalnych piosenek',
+    card_years: 'Lat historii',
+    card_skip_rate: 'Wsp. pomijania', card_skip_rate_sub: 'pominiętych utworów',
+    card_skipped: 'Pominięto',
+    card_in_year: 'w roku',
+    card_of_all_plays: 'wszystkich odtworzeń',
+    card_top_artist: 'Top artysta', card_no_data: 'brak danych',
+    // Mode stats
+    mode_shuffle: 'Tryb shuffle', mode_offline: 'Offline',
+    // DOW
+    days_short: ['Pon','Wt','Śr','Czw','Pt','Sob','Nd'],
+    days_long: ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'],
+    // Habit cards
+    habit_peak_hour: 'Szczytowa godzina', habit_peak_hour_sub: 'najaktywniejsza pora dnia',
+    habit_peak_day: 'Najaktywniejszy dzień', habit_peak_day_sub: 'w skali tygodnia',
+    habit_shuffle: 'Shuffle', habit_shuffle_sub: 'odtworzeń w trybie losowym',
+    habit_offline: 'Offline', habit_offline_sub: 'słuchania bez internetu',
+    habit_platform: 'Główna platforma', habit_platform_sub: 'czasu słuchania',
+    // Year grid
+    year_music: 'muzyki', year_plays: 'odtworzeń',
+    year_skipped: 'pominiętych', year_top_artists: 'Top artyści',
+    // Misc
+    hours_short: 'godz.', shuffle_label: 'Shuffle', order_label: 'Kolejność',
+  },
+  en: {
+    // Nav
+    nav_overview: 'Overview', nav_timeline: 'Timeline', nav_artists: 'Artists',
+    nav_albums: 'Albums', nav_tracks: 'Tracks', nav_habits: 'Habits',
+    nav_years: 'Year by Year', nav_vinyl: 'Vinyls',
+    // Header
+    title_my: 'My', title_history: 'Full History',
+    header_years: 'years of history',
+    // Year filter
+    pill_all: 'All',
+    // Vinyl sort
+    vi_sort_spotify: 'By Spotify', vi_sort_vinyl: 'By Vinyls',
+    // Overview
+    ov_top_artists: 'Top 10 Artists', ov_top_artists_sub: 'By listening time (hours)',
+    ov_by_year: 'Listening by Year', ov_by_year_sub: 'Total time in hours',
+    ov_platforms: 'Platforms', ov_platforms_sub: 'Where you listen from',
+    ov_mode: 'Listening Mode', ov_mode_sub: 'Shuffle / Offline',
+    ov_hour: 'Hour of Day', ov_hour_sub: 'When you listen',
+    // Timeline
+    tl_monthly: 'Listening History — Monthly',
+    tl_monthly_sub: 'Hours of music each month from 2013 to 2026',
+    tl_daytime: 'Time of Day', tl_daytime_sub: 'When during the day you listen (total)',
+    tl_dow: 'Day of Week', tl_dow_sub: 'Listening distribution',
+    tl_skip: 'Skip Rate — Year by Year', tl_skip_sub: 'Percentage of skipped tracks',
+    // Artists
+    ar_top_ms: 'Top 50 Artists — Listening Time', ar_top_ms_sub: 'In hours',
+    ar_top_pl: 'Top 50 Artists — Play Count', ar_top_pl_sub: 'How many times a track started playing',
+    ar_countries: 'Listening Countries', ar_countries_sub: 'Where in the world you listened to Spotify',
+    // Albums
+    al_top_h: 'Top 50 Albums — Listening Time', al_top_h_sub: 'Total playback time',
+    al_top_p: 'Top 50 Albums — Play Count', al_top_p_sub: 'How many times you played a track from that album',
+    album_plays: 'plays',
+    // Tracks
+    tr_top: 'Top 50 All-Time Tracks', tr_top_sub: 'By total listening time',
+    // Habits
+    ha_hour: 'Time of Day', ha_hour_sub: 'Listening hours throughout the day',
+    ha_dow: 'Day of Week', ha_dow_sub: 'Monday – Sunday',
+    ha_plat: 'Platform', ha_plat_sub: 'How you listen',
+    ha_shuffle: 'Shuffle vs Order', ha_shuffle_sub: 'How much time in shuffle mode',
+    // Vinyl tab
+    vi_hours: 'Listening hours', vi_vinyls: 'Number of vinyls',
+    // Summary cards
+    card_hours: 'Hours of Music', card_hours_sub: 'days of continuous music',
+    card_plays: 'Plays', card_plays_sub: 'in full history',
+    card_artists: 'Unique Artists', card_artists_sub: 'different artists',
+    card_tracks: 'Unique Tracks', card_tracks_sub: 'unique songs',
+    card_years: 'Years of History',
+    card_skip_rate: 'Skip Rate', card_skip_rate_sub: 'skipped tracks',
+    card_skipped: 'Skipped',
+    card_in_year: 'in year',
+    card_of_all_plays: 'of all plays',
+    card_top_artist: 'Top Artist', card_no_data: 'no data',
+    // Mode stats
+    mode_shuffle: 'Shuffle Mode', mode_offline: 'Offline',
+    // DOW
+    days_short: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    days_long: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+    // Habit cards
+    habit_peak_hour: 'Peak Hour', habit_peak_hour_sub: 'most active time of day',
+    habit_peak_day: 'Most Active Day', habit_peak_day_sub: 'in the week',
+    habit_shuffle: 'Shuffle', habit_shuffle_sub: 'plays in shuffle mode',
+    habit_offline: 'Offline', habit_offline_sub: 'listening without internet',
+    habit_platform: 'Main Platform', habit_platform_sub: 'of listening time',
+    // Year grid
+    year_music: 'of music', year_plays: 'plays',
+    year_skipped: 'skipped', year_top_artists: 'Top Artists',
+    // Misc
+    hours_short: 'hrs.', shuffle_label: 'Shuffle', order_label: 'Order',
+  }
+};
+
+function t(key) {
+  const lang = T[LANG] || T.pl;
+  return lang[key] !== undefined ? lang[key] : (T.pl[key] !== undefined ? T.pl[key] : key);
+}
+
+function setLang(lang) {
+  LANG = lang;
+  document.documentElement.lang = lang;
+  // Update static data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t(key);
+    if (typeof val === 'string') el.textContent = val;
+  });
+  // Update active lang button
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  // Re-render dynamic JS content
+  updateSummaryCards();
+  // Year filter pill "All"
+  const allPill = document.querySelector('#year-filter .year-pill[data-year=""]');
+  if (allPill) allPill.textContent = t('pill_all');
+  // Mode stats
+  const S = DATA;
+  document.getElementById('mode-stats').innerHTML = `
+    <div><div class="ts-val">${S.shuffle_pct}%</div><div class="ts-label">${t('mode_shuffle')}</div></div>
+    <div><div class="ts-val">${S.offline_pct}%</div><div class="ts-label">${t('mode_offline')}</div></div>
+  `;
+  // DOW chart labels
+  const days = t('days_short');
+  [chartDowRef, chartDow2Ref].forEach(ch => {
+    if (!ch) return;
+    ch.data.labels = days;
+    ch.update();
+  });
+  // Countries — re-render
+  const cList = document.getElementById('country-list');
+  if (cList) {
+    cList.innerHTML = '';
+    S.countries.forEach(c => {
+      cList.innerHTML += `<div class="country-pill">
+        <span class="country-flag">${countryFlag(c.code)}</span>
+        <span class="country-name">${countryName(c.code)}</span>
+        <span class="country-hours">${c.hours.toFixed(0)} h</span>
+      </div>`;
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);
