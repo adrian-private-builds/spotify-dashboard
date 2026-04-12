@@ -111,13 +111,13 @@
   }
   .rank-list li:last-child { border-bottom: none; }
   .rank-num { font-size: 13px; color: var(--text3); width: 22px; text-align: right; flex-shrink: 0; }
-  .rank-info { flex: 1; min-width: 0; }
+  .rank-info { flex: 1; min-width: 0; overflow: hidden; }
   .rank-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .rank-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .rank-sub { font-size: 13px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .rank-bar-wrap { width: 90px; flex-shrink: 0; }
   .rank-bar-bg { background: var(--bg4); border-radius: 4px; height: 4px; }
   .rank-bar { background: var(--green); border-radius: 4px; height: 4px; }
-  .rank-val { font-size: 13px; color: var(--text2); text-align: right; white-space: nowrap; flex-shrink: 0; min-width: 50px; }
+  .rank-val { font-size: 13px; color: var(--text2); text-align: right; white-space: nowrap; flex-shrink: 0; min-width: 60px; }
   
   /* YEAR GRID */
   .year-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
