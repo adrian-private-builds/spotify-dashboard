@@ -253,7 +253,7 @@
   <div class="logo"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></div>
   <div>
     <h1><span data-i18n="title_my">Moje</span> <span>Spotify</span> — <span data-i18n="title_history">Pełna Historia</span></h1>
-    <p id="header-sub">Ładowanie danych...</p>
+    <p id="header-sub" data-i18n="loading">Ładowanie danych...</p>
   </div>
   <div class="lang-switch">
     <button class="lang-btn active" data-lang="pl" onclick="setLang('pl')">PL</button>
@@ -475,7 +475,7 @@ function fmtHours(h) {
   return h.toFixed(1) + ' h';
 }
 function fmtNum(n) {
-  return n.toLocaleString('pl-PL');
+  return n.toLocaleString(LANG === 'en' ? 'en-US' : 'pl-PL');
 }
 function countryFlag(code) {
   const flags = {PL:'🇵🇱',DE:'🇩🇪',US:'🇺🇸',GB:'🇬🇧',FR:'🇫🇷',ES:'🇪🇸',IT:'🇮🇹',NL:'🇳🇱',SE:'🇸🇪',NO:'🇳🇴',DK:'🇩🇰',AT:'🇦🇹',CH:'🇨🇭',BE:'🇧🇪',CZ:'🇨🇿',PT:'🇵🇹',AU:'🇦🇺',CA:'🇨🇦',JP:'🇯🇵',KR:'🇰🇷',BR:'🇧🇷',MX:'🇲🇽',AR:'🇦🇷',TR:'🇹🇷',RU:'🇷🇺',UA:'🇺🇦',HU:'🇭🇺',SK:'🇸🇰',HR:'🇭🇷',RO:'🇷🇴',BG:'🇧🇬',GR:'🇬🇷','??':'🌍'};
@@ -1090,7 +1090,7 @@ function init() {
         <div class="rank-sub">${a.artist}</div>
       </div>
       <div class="rank-bar-wrap"><div class="rank-bar-bg"><div class="rank-bar" style="width:${(a.plays/maxAlbumP2*100).toFixed(1)}%"></div></div></div>
-      <span class="rank-val">${a.plays.toLocaleString('pl-PL')} ${t('album_plays')}</span>
+      <span class="rank-val">${a.plays.toLocaleString(LANG === 'en' ? 'en-US' : 'pl-PL')} ${t('album_plays')}</span>
     </li>`;
   });
 
@@ -1192,6 +1192,7 @@ const T = {
     year_skipped: 'pominiętych', year_top_artists: 'Top artyści',
     // Misc
     hours_short: 'godz.', shuffle_label: 'Shuffle', order_label: 'Kolejność',
+    loading: 'Ładowanie danych...', track_plays_unit: '×',
   },
   en: {
     // Nav
@@ -1261,6 +1262,7 @@ const T = {
     year_skipped: 'skipped', year_top_artists: 'Top Artists',
     // Misc
     hours_short: 'hrs.', shuffle_label: 'Shuffle', order_label: 'Order',
+    loading: 'Loading data...', track_plays_unit: '×',
   }
 };
 
@@ -1284,6 +1286,29 @@ function setLang(lang) {
   });
   // Re-render dynamic JS content
   updateSummaryCards();
+  updateArtistLists();
+  updateTrackList();
+  // Re-render album list (locale-aware number formatting)
+  const S2 = DATA;
+  const albums = S2.top_albums || [];
+  const listAlbP2 = document.getElementById('list-albums-plays');
+  if (listAlbP2) {
+    listAlbP2.innerHTML = '';
+    const byPlays2 = [...albums].sort((a,b)=>b.plays-a.plays).slice(0,50);
+    const maxP2 = byPlays2[0]?.plays || 1;
+    byPlays2.forEach((a, i) => {
+      listAlbP2.innerHTML += `<li>
+        <span class="rank-num">${i+1}</span>
+        <div class="rank-info"><div class="rank-name">${a.album}</div><div class="rank-sub">${a.artist}</div></div>
+        <div class="rank-bar-wrap"><div class="rank-bar-bg"><div class="rank-bar" style="width:${(a.plays/maxP2*100).toFixed(1)}%"></div></div></div>
+        <span class="rank-val">${a.plays.toLocaleString(LANG === 'en' ? 'en-US' : 'pl-PL')} ${t('album_plays')}</span>
+      </li>`;
+    });
+  }
+  // Header subtitle
+  const summary2 = S2.summary;
+  document.getElementById('header-sub').textContent =
+    `${summary2.date_from} → ${summary2.date_to} · ${summary2.years} ${t('header_years')}`;
   // Year filter pill "All"
   const allPill = document.querySelector('#year-filter .year-pill[data-year=""]');
   if (allPill) allPill.textContent = t('pill_all');
@@ -1312,6 +1337,43 @@ function setLang(lang) {
       </div>`;
     });
   }
+  // Habit cards — re-render
+  const peakHour2 = S.hour_ms.indexOf(Math.max(...S.hour_ms));
+  const peakDow2 = S.dow_ms.indexOf(Math.max(...S.dow_ms));
+  const dowNames2 = t('days_long');
+  const habitCards2 = [
+    { label: t('habit_peak_hour'), value: peakHour2+':00', sub: t('habit_peak_hour_sub') },
+    { label: t('habit_peak_day'), value: dowNames2[peakDow2], sub: t('habit_peak_day_sub') },
+    { label: t('habit_shuffle'), value: S.shuffle_pct+'%', sub: t('habit_shuffle_sub') },
+    { label: t('habit_offline'), value: S.offline_pct+'%', sub: t('habit_offline_sub') },
+    { label: t('habit_platform'), value: S.platforms[0].name, sub: S.platforms[0].pct+'% '+t('habit_platform_sub') },
+  ];
+  const hcEl2 = document.getElementById('habit-cards');
+  if (hcEl2) {
+    hcEl2.innerHTML = '';
+    habitCards2.forEach(c => {
+      hcEl2.innerHTML += `<div class="stat-card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`;
+    });
+  }
+  // Year grid — re-render
+  const ygEl2 = document.getElementById('year-grid');
+  if (ygEl2) {
+    ygEl2.innerHTML = '';
+    Object.entries(S.year_stats).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([y, s]) => {
+      const topYear2 = (S.top_per_year[y] || []).slice(0,3);
+      const topHtml2 = topYear2.map(a=>`<div class="ytop-item"><span class="ytop-name" title="${a.name}">${a.name}</span><span>${a.hours.toFixed(1)} h</span></div>`).join('');
+      ygEl2.innerHTML += `<div class="year-card">
+        <h3>${y}</h3>
+        <div class="ystat"><strong>${s.hours.toFixed(1)} h</strong> ${t('year_music')}</div>
+        <div class="ystat"><strong>${fmtNum(s.plays)}</strong> ${t('year_plays')}</div>
+        <div class="ystat"><strong>${s.skip_rate}%</strong> ${t('year_skipped')}</div>
+        ${topYear2.length ? `<div class="ytop"><div class="ytop-label">${t('year_top_artists')}</div>${topHtml2}</div>` : ''}
+      </div>`;
+    });
+  }
+  // Vinyl sort bar buttons
+  document.getElementById('vinyl-sort-spotify').textContent = t('vi_sort_spotify');
+  document.getElementById('vinyl-sort-vinyl').textContent = t('vi_sort_vinyl');
 }
 
 document.addEventListener('DOMContentLoaded', init);
